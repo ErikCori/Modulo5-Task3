@@ -131,7 +131,7 @@ function redirect(data){
     location.reload();
     window.location.replace('/web/game.html?gp=' + data.gpid);
 }
-//*********************************************Join/Play a Game ************************************************
+//*********************************************Join a Game ************************************************
 function joinGame(event){
     var idGame =event.target.dataset.id;
     console.log(idGame)

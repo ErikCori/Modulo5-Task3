@@ -1,10 +1,7 @@
 package com.codeoftheweb.salvo.Controller;
 
 
-import com.codeoftheweb.salvo.Model.Game;
-import com.codeoftheweb.salvo.Model.GamePlayer;
-import com.codeoftheweb.salvo.Model.Player;
-import com.codeoftheweb.salvo.Model.Ship;
+import com.codeoftheweb.salvo.Model.*;
 import com.codeoftheweb.salvo.Repository.GamePlayerRepository;
 import com.codeoftheweb.salvo.Repository.GameRepository;
 import com.codeoftheweb.salvo.Repository.PlayerRepository;
@@ -168,20 +165,20 @@ public class SalvoController {
         return new ResponseEntity<>(makeMap("gpid", newGamePlayer.getId()), HttpStatus.CREATED);
     }
     //*****************************************Add ship*********************************************************************
-    @RequestMapping(path = "/games/players/{gamePlayerId}/ships", method = RequestMethod.POST)
+    @RequestMapping(path = "/games/players/{gamePlayerId}/ships",produces = "application/json", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> addShip (@PathVariable long gamePlayerId,
-                                                        @RequestParam List<Ship> newShips,
+                                                        @RequestBody List<ShipPlayer> newShips,
                                                         Authentication authentication){
         GamePlayer gamePlayer = gamePlayerRepository.findById(gamePlayerId).orElse(null);
         Player player = playerRepository.findByUsername(authentication.getName());
 
-        if(isGuest(authentication) || gamePlayer == null || player.getId() != gamePlayerId){
+        if(isGuest(authentication) || gamePlayer == null || player.getId() != gamePlayer.getPlayer().getId()){
             return new ResponseEntity<>(makeMap("error", "No player logged in"), HttpStatus.UNAUTHORIZED);
         }
-        if(gamePlayer.getShips() != null){
+        if(!gamePlayer.getShips().isEmpty()){
             return new ResponseEntity<>(makeMap("error", "Player already place ships"), HttpStatus.FORBIDDEN);
         }
-        newShips.stream().map(ship -> shipRepository.save(new Ship(gamePlayer, ship.getType(), ship.getLocations())));
+        newShips.stream().forEach(ship -> shipRepository.save(new Ship(gamePlayer, ship.getType(), ship.getLocations())));
         return new ResponseEntity<>(makeMap("done", "Ship added"), HttpStatus.CREATED);
     }
 

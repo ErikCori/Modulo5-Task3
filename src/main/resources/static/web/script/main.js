@@ -247,4 +247,15 @@ const listenBusyCells = function(id){
 
 function back(){
     window.location.replace('/web/games.html');
-  }
+}
+
+function placeShips(){
+    $.ajax({
+      type: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      url: '/api/games/players/'+getParameterByName('gp')+'/ships',
+      data: JSON.stringify()
+    });
+    $('#place-ships').hide();
+    location.reload();
+}
