@@ -88,11 +88,11 @@ public class SalvoApplication {
 										gamePlayer9, gamePlayer10, gamePlayer11, gamePlayer12, gamePlayer13, gamePlayer14));
 
 			//Save a couple of ships
-			String carrier = "Carrier";
-			String battleship = "Battleship";
-			String submarine = "Submarine";
-			String destroyer = "Destroyer";
-			String patrolBoat = "Patrol Boat";
+			String carrier = "carrier";
+			String battleship = "battleship";
+			String submarine = "submarine";
+			String destroyer = "destroyer";
+			String patrolBoat = "patrol_boat";
 
 			Ship ship1 = new Ship(gamePlayer1, destroyer, Arrays.asList("H2", "H3", "H4"));
 			Ship ship2 = new Ship(gamePlayer1, submarine, Arrays.asList("E1", "F1", "G1"));

@@ -20,6 +20,7 @@ function loadData() {
       $('#playerInfo').text(playerInfo[0].email + '(you) vs ' + playerInfo[1].email);
 
       loadGrid();
+      loadShips(data.ships);
       /*data.ships.forEach(function (shipPiece) {
         shipPiece.shipLocations.forEach(function (shipLocation) {
           let turnHitted = isHit(shipLocation,data.salvoes,playerInfo[0].id)
@@ -47,6 +48,39 @@ function loadData() {
     .fail(function (jqXHR, textStatus) {
       alert('Failed: ' + textStatus);//Especificar cada error y  mensaje
     });
+}
+
+const loadShips = function(datos){
+  var options ={
+    width: 10,
+    height: 10,
+    verticalMargin: 0,
+    cellHeight: 45,
+    disableResize: true,
+    float: true,
+    disableOneColumnMode: true,
+    staticGrid: true,
+    animate:true
+  }
+  $('.grid-stack').gridstack(options);
+  grid = $('#gridPlaced').data('gridstack');
+  var dataShips = {
+    carrier : {width:5, height:1},
+    battleship : {width:4, height:1},
+    submarine : {width:3, height:1},
+    destroyer : {width:3, height:1},
+    patrol_boat : {width:2,height:1}
+  }
+  datos.forEach(function(ship){
+    grid.addWidget($('<div id='+ship.type+'><div class="grid-stack-item-content '+ship.type+'Horizontal"></div><div/>'),
+    ship.shipLocations[0].charAt(1)-1, ship.shipLocations[0].charCodeAt(0) - 65, 
+    dataShips[ship.type].width, dataShips[ship.type].height);
+  })
+  
+  createGrid(11, $(".grid-shipsPlaced"), 'shipsPlaced')
+  
+  listenBusyCells('shipsPlaced')
+  $('.grid-stack').on('change', () => listenBusyCells('shipsPlaced'))
 }
 
 const loadGrid = function () {
