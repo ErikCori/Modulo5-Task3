@@ -11,16 +11,18 @@ function loadData() {
   $.get('/api/game_view/' + getParameterByName('gp'))
     .done(function (data) {
       console.log(data);
-      var playerInfo;
-      if (data.gamePlayers[0].id == getParameterByName('gp'))
+      /*var playerInfo;
+      if (data.gamePlayers[0].id == getParameterByName('gp')){
         playerInfo = [data.gamePlayers[0].player, data.gamePlayers[1].player];
-      else
+      }
+      else{
         playerInfo = [data.gamePlayers[1].player, data.gamePlayers[0].player];
+      }
 
       $('#playerInfo').text(playerInfo[0].email + '(you) vs ' + playerInfo[1].email);
-
-      loadGrid();
-      loadShips(data.ships);
+      */
+      //loadGrid();
+      loadShips(data.ships, false);
       /*data.ships.forEach(function (shipPiece) {
         shipPiece.shipLocations.forEach(function (shipLocation) {
           let turnHitted = isHit(shipLocation,data.salvoes,playerInfo[0].id)
@@ -50,7 +52,7 @@ function loadData() {
     });
 }
 
-const loadShips = function(datos){
+let loadShips = function(datos,isStatic){
   var options ={
     width: 10,
     height: 10,
@@ -59,7 +61,7 @@ const loadShips = function(datos){
     disableResize: true,
     float: true,
     disableOneColumnMode: true,
-    staticGrid: true,
+    staticGrid: isStatic,
     animate:true
   }
   $('.grid-stack').gridstack(options);
@@ -71,11 +73,42 @@ const loadShips = function(datos){
     destroyer : {width:3, height:1},
     patrol_boat : {width:2,height:1}
   }
-  datos.forEach(function(ship){
-    grid.addWidget($('<div id='+ship.type+'><div class="grid-stack-item-content '+ship.type+'Horizontal"></div><div/>'),
-    ship.shipLocations[0].charAt(1)-1, ship.shipLocations[0].charCodeAt(0) - 65, 
-    dataShips[ship.type].width, dataShips[ship.type].height);
-  })
+  if(datos.length != 0){
+    datos.forEach(function(ship){
+      var orientation;
+      var width;
+      var height;
+      if(ship.shipLocations[0].charCodeAt(0)< ship.shipLocations[1].charCodeAt(0)){
+        orientation = "Vertical"
+        width = dataShips[ship.type].height;
+        height = dataShips[ship.type].width;
+      }
+      else{
+        orientation = "Horizontal"
+        width = dataShips[ship.type].width;
+        height = dataShips[ship.type].height;
+      }
+      grid.addWidget($('<div id='+ship.type+'><div class="grid-stack-item-content '+ship.type+orientation+'"></div><div/>'),
+      ship.shipLocations[0].charAt(1)-1, ship.shipLocations[0].charCodeAt(0) - 65, 
+      width, height);
+    })
+  }
+  else{
+    grid.addWidget($('<div id="patrol_boat"><div class="grid-stack-item-content patrol_boatHorizontal"></div><div/>'),
+      0, 1, 2, 1);
+
+    grid.addWidget($('<div id="carrier"><div class="grid-stack-item-content carrierHorizontal"></div><div/>'),
+      1, 5, 5, 1);
+
+    grid.addWidget($('<div id="battleship"><div class="grid-stack-item-content battleshipHorizontal"></div><div/>'),
+      3, 1, 4, 1);
+
+    grid.addWidget($('<div id="submarine"><div class="grid-stack-item-content submarineVertical"></div><div/>'),
+      8, 2, 1, 3);
+
+    grid.addWidget($('<div id="destroyer"><div class="grid-stack-item-content destroyerHorizontal"></div><div/>'),
+      7, 8, 3, 1);
+  }
   
   createGrid(11, $(".grid-shipsPlaced"), 'shipsPlaced')
   
@@ -332,10 +365,20 @@ function back(){
   window.location.replace('/web/games.html');
 }
 function placeShips(){
+  var test = [ { "type": "destroyer", "locations": ["A1", "B1", "C1"] },
+  { "type": "patrol boat", "locations": ["H5", "H6"] }
+]
   $.ajax({
     type: 'POST',
     contentType: 'application/json; charset=utf-8',
     url: '/api/games/players/'+getParameterByName('gp')+'/ships',
-    data: JSON.stringify()
+    data: JSON.stringify(test),
+    success: function(){
+      alert( "Ships saved");
+      location.reload();
+    },
+    error: function(XMLHttpRequest, textStatus, errorThrown) {
+      alert("Something wrong");
+    }
   });
 }
