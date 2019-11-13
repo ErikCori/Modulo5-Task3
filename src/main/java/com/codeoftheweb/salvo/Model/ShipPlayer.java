@@ -5,16 +5,16 @@ import java.util.List;
 
 public class ShipPlayer {
     private String type;
-    private List<String> locations = new ArrayList<>();
+    private List<String> shipLocations = new ArrayList<>();
 
     public ShipPlayer(){}
-    public ShipPlayer(String type, List<String> locations) {
+    public ShipPlayer(String type, List<String> shipLocations) {
         this.type = type;
-        this.locations = locations;
+        this.shipLocations = shipLocations;
     }
 
     //Getters
     public String getType(){return type;}
 
-    public List<String> getLocations() {return locations;}
+    public List<String> getShipLocations() {return shipLocations;}
 }

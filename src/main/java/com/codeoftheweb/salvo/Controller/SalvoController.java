@@ -178,7 +178,7 @@ public class SalvoController {
         if(!gamePlayer.getShips().isEmpty()){
             return new ResponseEntity<>(makeMap("error", "Player already place ships"), HttpStatus.FORBIDDEN);
         }
-        newShips.stream().forEach(ship -> shipRepository.save(new Ship(gamePlayer, ship.getType(), ship.getLocations())));
+        newShips.stream().forEach(ship -> shipRepository.save(new Ship(gamePlayer, ship.getType(), ship.getShipLocations())));
         return new ResponseEntity<>(makeMap("done", "Ship added"), HttpStatus.CREATED);
     }
 

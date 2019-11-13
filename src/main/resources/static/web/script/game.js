@@ -29,6 +29,7 @@ function loadData() {
     });
 }
 
+/**********************************Function load Grid*********************************/
 let loadShips = function(datos,isStatic){
   changeOptions(shipsPlayer);
   var options ={
@@ -269,16 +270,24 @@ const listenBusyCells = function(id){
       }
   }
 }
-
+/************************************Back **************************************/
 function back(){
   window.location.replace('/web/games.html');
 }
+
+/**************************************Place ships **************************************/
 function placeShips(){
-  var test = [ { "type": "destroyer", "locations": ["A1", "B1", "C1"] },
-  { "type": "patrol_boat", "locations": ["H5", "H6"] }
+  var test = [ { "type": "destroyer", "shipLocations": ["A1", "B1", "C1"] },
+  { "type": "patrol_boat", "shipLocations": ["H5", "H6"] }
 ]
-  var destroyer = getShipData("destroyer")
-  var shipsToPlace =[destroyer];
+  var destroyer = getShipData("destroyer");
+  var submarine = getShipData("submarine");
+  var patrol_boat = getShipData("patrol_boat");
+  var carrier = getShipData("carrier");
+  var battleship = getShipData("battleship");
+
+  var shipsToPlace =[destroyer, submarine, patrol_boat, carrier, battleship];
+  
 
   $.ajax({
     type: 'POST',
@@ -286,7 +295,7 @@ function placeShips(){
     url: '/api/games/players/'+getParameterByName('gp')+'/ships',
     data: JSON.stringify(shipsToPlace),
     success: function(){
-      alert( "Ships saved");
+      alert( "Saved");
       location.reload();
     },
     error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -295,41 +304,20 @@ function placeShips(){
   });
 
   /*$.post({
-    url: "/api/games/players/17/ships", 
-    data: JSON.stringify({ type: "destroyer", shipLocations: ["H1", "H2"] }),
+    url: "/api/games/players/"+getParameterByName('gp')+"/ships", 
+    data: JSON.stringify(shipsToPlace),
     dataType: "text",
     contentType: "application/json"
   })
-  .done(function (response, status, jqXHR) {
-    alert( "Pet added: " + response );
+  .done(function (data) {
+    alert( "ship added"+data);
+    location.reload();
   })
-  .fail(function (jqXHR, status, httpError) {
-    alert("Failed to add pet: " + textStatus + " " + httpError);
+  .fail(function (error) {
+    alert("Failed to add ship: " + error.responseJSON.error);
   })*/
 }
-
-/*function getShipData(shipType){
-  var ship = new Object();
-  ship["type"] = $('#' + shipType).attr('id');
-  ship["x"] = $('#' + shipType).attr('data-gs-x');
-  ship["y"] = $('#' + shipType).attr('data-gs-y');
-  ship["width"] = $('#' + shipType).attr('data-gs-width');
-  ship["height"] = $('#' + shipType).attr('data-gs-height');
-  ship["positions"] = [];
-  if(ship.height == 1){
-    for(i=1; i<=ship.width; i++){
-      ship.positions.push(String.fromCharCode(parseInt(ship.y) + 65)  +(parseInt(ship.x) + i))
-    }
-  }else{
-    for(i=0; i<ship.height; i++){
-      ship.positions.push(String.fromCharCode(parseInt(ship.y) + 65 + i) + (parseInt(ship.x) + 1))
-    }
-  }
-  var objShip = new Object();
-  objShip["type"] = ship.type;
-  objShip["shipLocations"] = ship.positions;
-  return objShip;
-}*/
+//***********************************Data ships ******************/
 const getShipData = function (shipType) {
   var ship = new Object();
   ship["name"] = $("#" + shipType).attr('id');
@@ -348,15 +336,10 @@ const getShipData = function (shipType) {
       }
   }
   var objShip = new Object();
-  objShip["ship"] = ship.name;
-  objShip["shipLocation"] = ship.positions;
+  objShip["type"] = ship.name;
+  objShip["shipLocations"] = ship.positions;
   return objShip;
 }
-
-
-
-
-
 
 function changeOptions(data){
   if(data.length != 0){
