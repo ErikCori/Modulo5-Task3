@@ -22,14 +22,15 @@
         <div class="row">
           <div class="col">
             <section>
-              <h2>Game Board</h2>
+              <h2 id="titleGame">Game Board</h2>
+              <h2 id="titlePlace">Place ships board</h2>
               <div class="grid-shipsPlaced" id="ships">
                 <div id="gridPlaced" class="grid-stack grid-stack-10">
                 </div>
                </div>
                <small id="alert-text"></small>
               <div>
-                <button type="button" class="btn-success" onclick="placeShips()">Done</button>
+                <button type="button" class="btn-success" onclick="placeShips()" id="placeShips">Done</button>
               </div>
             </section>
           </div>
