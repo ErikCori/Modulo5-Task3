@@ -32,7 +32,7 @@
             <button type="button" class="btn-success" id="newGameButton" onclick="createNewGame()">Create new game</button>
         </div>
         <div>
-            <div class="container">
+            <div class="container" v-show= "player != null">
                 <h2 class="text-center">Games</h2>
                 <table class="table table-bordered table-dark table-hover" id="salvo-table">
 
